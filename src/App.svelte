@@ -30,8 +30,8 @@
     opts.path = path;
     call_api(service + '/get-data', opts).then(function(res) {
       if (res.ok) {
-        console.log(res.msg);
-        data = res.msg;
+        console.log(JSON.parse(res.msg));
+        data = JSON.parse(res.msg);
       } else {
         console.log('An error occured: ' + res);
       }
