@@ -67,7 +67,7 @@
   }
   
   function save(){
-    data.push({"text": text});
+    data.unshift({"text": text});
     data = data;
     setData('data.json', 'json', data)
   }
@@ -127,4 +127,11 @@
 
 </div>
 
-
+<style>
+  article{
+    padding: 15px;
+    border: 1px solid #DDD;
+    margin-top: 10px;
+  }
+  
+</style>
