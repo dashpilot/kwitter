@@ -169,7 +169,7 @@
     
   <textarea class="form-control mb-3" spellcheck="false" bind:value={text}></textarea>
   
-  <button on:click={addItem}>Save</button>
+  <button on:click={addItem}>Post</button>
   <br>
   
 </div>
