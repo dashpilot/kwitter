@@ -1,10 +1,12 @@
 
 <script>
+  import { onMount } from 'svelte';
   import User from "./components/User.svelte";
   import { auth } from './firebase';
   
   let user = false; 
   let service = "s3";
+  let data = [];
   let text = "";
   
   function setData(path, type, content) {
@@ -29,6 +31,7 @@
     call_api(service + '/get-data', opts).then(function(res) {
       if (res.ok) {
         console.log(res.msg);
+        data = res.msg;
       } else {
         console.log('An error occured: ' + res);
       }
@@ -64,9 +67,25 @@
   }
   
   function save(){
-    let content = {"text": text}
-    setData('data.json', 'json', content)
+    data.push({"text": text});
+    setData('data.json', 'json', data)
   }
+  
+ onMount(async () => { 
+ auth.onAuthStateChanged(myuser => {
+  // if user is not logged in the auth will be null
+  if (myuser) {
+    user = myuser;
+ 
+    console.log(user)
+    console.log('logged in');
+    getData('data.json');
+  } else {
+    console.log('not logged in');
+  }
+  });
+
+ });
   
 </script>
 <div>
@@ -87,12 +106,20 @@
 
 <div class="container mt-5">
   {#if user}
-  <textarea class="form-control mb-3" bind:value={text}></textarea>
+  <textarea class="form-control mb-3" spellcheck="false" bind:value={text}></textarea>
   
-  
-  
- 
   <button on:click={save}>Save</button>
+  
+  
+  {#if data.length}
+  {#each data as item}
+  <article>
+    {item.text}
+  </article>
+  {/each}
+  
+  {/if}
+  
   {/if}
   
 </div>

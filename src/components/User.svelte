@@ -22,18 +22,7 @@
 	  });
   }
 
-  onMount(async () => {
-   auth.onAuthStateChanged(myuser => {
-	 // if user is not logged in the auth will be null
-	 if (myuser) {
-	   user = myuser;
-	   console.log(user)
-	   console.log('logged in');
-	 } else {
-	   console.log('not logged in');
-	 }
-   });
-  });
+  
   
 </script>
 
