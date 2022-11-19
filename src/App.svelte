@@ -5,7 +5,7 @@
   
   let user = false; 
   let service = "s3";
-  let content = {'title': 'Hello world'};
+  let text = "";
   
   function setData(path, type, content) {
     console.log('called')
@@ -63,6 +63,11 @@
   
   }
   
+  function save(){
+    let content = {"text": text}
+    setData('data.json', 'json', content)
+  }
+  
 </script>
 <div>
 
@@ -81,11 +86,17 @@
 
 
 <div class="container mt-5">
-  
   {#if user}
-  <button on:click={() => setData('hello.json', 'json', content)}>Set Data</button>
+  <textarea class="form-control mb-3" bind:value={text}></textarea>
+  
+  
+  
+ 
+  <button on:click={save}>Save</button>
   {/if}
   
 </div>
 
 </div>
+
+
