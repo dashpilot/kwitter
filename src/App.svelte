@@ -5,7 +5,7 @@
   
   let user = false; 
   let service = "s3";
-  let content = {"title": "Hello world"};
+  let content = {'title': 'Hello world'};
   
   function setData(path, type, content) {
     console.log('called')
