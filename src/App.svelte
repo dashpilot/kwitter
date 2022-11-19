@@ -2,13 +2,15 @@
 <script>
   import { onMount } from 'svelte';
   import User from "./components/User.svelte";
-  import { auth } from './firebase';
+  import { auth, db } from './firebase';
   
   let user = false; 
   let service = "s3";
   let data = [];
   let text = "";
   
+  
+  /*
   function setData(path, type, content) {
     console.log('called')
     
@@ -65,11 +67,47 @@
     }
   
   }
+  */
   
-  function save(){
-    data.unshift({"text": text});
-    data = data;
-    setData('data.json', 'json', data)
+  function getData(table){
+    let myref = db.ref(table);
+    
+    myref.on('value', (snapshot) => {
+      
+      var result = snapshot.val();
+      var mydata = [];
+      
+      Object.keys(result).forEach((key) => {
+        mydata.push(result[key]);
+      });
+      
+      mydata = mydata.reverse()
+      
+      console.log(mydata)
+      
+      data = mydata;
+
+      console.log(snapshot.val())
+      // updateStarCount(postElement, data);
+    });
+    
+  
+  }
+  
+  function addItem(){
+    let id = Date.now();
+    let newPost = {"id": id, "text": text}
+
+    db.ref('posts/' + id).set(newPost);
+    text = "";
+  }
+  
+  
+  function deleteItem(table, id){
+    if(confirm("Are you sure you wish to delete this item?")){
+      let myref = db.ref(table+"/"+id);
+      myref.remove()
+    }
   }
   
  onMount(async () => { 
@@ -80,7 +118,7 @@
  
     console.log(user)
     console.log('logged in');
-    getData('data.json');
+    getData('posts');
   } else {
     console.log('not logged in');
   }
@@ -105,17 +143,31 @@
 </nav>
 
 
-<div class="container mt-5">
+<div class="container">
+  
+  <div class="row"><div class="col-8">
+  
+  
   {#if user}
+  
+  <div class="add">
   <textarea class="form-control mb-3" spellcheck="false" bind:value={text}></textarea>
   
-  <button on:click={save}>Save</button>
+  <button on:click={addItem}>Save</button>
+  <br>
   
-  
+</div>
+
   {#if data.length}
   {#each data as item}
   <article>
+    
+    <button class="float-end" on:click={() => deleteItem('posts', item.id)}>delete</button>
+    
     {item.text}
+    
+    <div class="clear"></div>
+   
   </article>
   {/each}
   
@@ -123,15 +175,55 @@
   
   {/if}
   
+  </div><div class="col-4">
+    
+    <div class="trends">
+      
+      <h4>Trends</h4>
+      
+    </div>
+    
+  </div></div>
+  
+  
 </div>
+
 
 </div>
 
 <style>
+  .container{
+    max-width: 960px;
+  }
+  
+  
   article{
     padding: 15px;
     border: 1px solid #DDD;
-    margin-top: 10px;
+    border-top: 0;
   }
   
+
+  .add{
+    border: 1px solid  #DDD;
+    border-top: 0;
+    padding: 15px;
+  }
+  
+  textarea{
+    height: 120px;
+    resize: none;
+  }
+  
+  .clear{
+    clear: both;
+  }
+  
+  .trends{
+    background-color: #F7F9F9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+    min-height: 150px;
+  }
 </style>
