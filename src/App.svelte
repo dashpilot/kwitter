@@ -68,6 +68,7 @@
   
   function save(){
     data.push({"text": text});
+    data = data;
     setData('data.json', 'json', data)
   }
   
