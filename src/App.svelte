@@ -5,6 +5,7 @@
   import { auth, db } from './firebase';
   
   let user = false; 
+  let handle = localStorage.getItem('handle')
   let service = "s3";
   let data = [];
   let text = "";
@@ -75,6 +76,8 @@
     myref.on('value', (snapshot) => {
       
       var result = snapshot.val();
+      
+      if(result){
       var mydata = [];
       
       Object.keys(result).forEach((key) => {
@@ -88,6 +91,8 @@
       data = mydata;
 
       console.log(snapshot.val())
+      
+    }
       // updateStarCount(postElement, data);
     });
     
@@ -96,7 +101,7 @@
   
   function addItem(){
     let id = Date.now();
-    let newPost = {"id": id, "email": user.email, "name": user.displayName, "text": text}
+    let newPost = {"id": id, "handle": localStorage.getItem('handle'), "name": user.displayName, "text": text}
 
     db.ref('posts/' + id).set(newPost);
     text = "";
@@ -114,6 +119,8 @@
  auth.onAuthStateChanged(myuser => {
   // if user is not logged in the auth will be null
   if (myuser) {
+    
+  
     user = myuser;
  
     console.log(user)
@@ -150,7 +157,11 @@
   
   {#if user}
   
+  
   <div class="add">
+    
+  
+    
   <textarea class="form-control mb-3" spellcheck="false" bind:value={text}></textarea>
   
   <button on:click={addItem}>Save</button>
@@ -162,12 +173,16 @@
   {#each data as item}
   <article>
     
-    <div class="handle">{item.name}</div>
+    <div class="handle">
+      
+      <span class="name">{item.name}</span><span class="username">@{item.handle}</span>
+    
+    </div>
 
     
     <div class="text">{item.text}</div>
     
-    {#if item.email == user.email}
+    {#if item.handle == handle}
     <button class="float-end" on:click={() => deleteItem('posts', item.id)}>delete</button>
     {/if}
     
@@ -229,8 +244,13 @@
     clear: both;
   }
   
-  .handle{
+  .name{
     font-weight: bold;
+  }
+  
+  .username{
+    color: #566370;
+    padding-left: 5px;
   }
   
   .trends{

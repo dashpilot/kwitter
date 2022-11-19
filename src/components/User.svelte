@@ -1,11 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  import { auth, googleProvider } from './../firebase';
+  import { auth, googleProvider, twitterProvider } from './../firebase';
   
   export let user;
   
   async function signIn() {
-	auth.signInWithPopup(googleProvider).then(function(myuser) {
+	auth.signInWithPopup(twitterProvider).then(function(myuser) {
+	  let handle = myuser.additionalUserInfo.username;
+	  localStorage.setItem('handle', handle);
 	  user = myuser;
 	  console.log(user)
 	}, function(e) {
@@ -31,5 +33,5 @@
 {#if user}
 <button on:click={signOut}>Sign Out</button>
 {:else}
-<button on:click={signIn}>Log in with Google</button>
+<button on:click={signIn}>Log in with Twitter</button>
 {/if}
