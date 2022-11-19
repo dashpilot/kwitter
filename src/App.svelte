@@ -101,7 +101,12 @@
   
   function addItem(){
     let id = Date.now();
-    let newPost = {"id": id, "handle": localStorage.getItem('handle'), "name": user.displayName, "text": text}
+    var name = handle;
+    if(user.displayName){
+      name = user.displayName;
+    }
+    
+    let newPost = {"id": id, "handle": localStorage.getItem('handle'), "name": name, "text": text}
 
     db.ref('posts/' + id).set(newPost);
     text = "";
