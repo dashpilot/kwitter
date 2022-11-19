@@ -96,7 +96,7 @@
   
   function addItem(){
     let id = Date.now();
-    let newPost = {"id": id, "text": text}
+    let newPost = {"id": id, "email": user.email, "name": user.displayName, "text": text}
 
     db.ref('posts/' + id).set(newPost);
     text = "";
@@ -132,7 +132,7 @@
 <nav>
 
 <div class="row g-0">
-  <div class="col-6"></div>
+  <div class="col-6"><h3 class="pt-1">Kwitter</h3></div>
   
   <div class="col-6 text-end">
  <User bind:user />
@@ -162,9 +162,14 @@
   {#each data as item}
   <article>
     
-    <button class="float-end" on:click={() => deleteItem('posts', item.id)}>delete</button>
+    <div class="handle">{item.name}</div>
+
     
-    {item.text}
+    <div class="text">{item.text}</div>
+    
+    {#if item.email == user.email}
+    <button class="float-end" on:click={() => deleteItem('posts', item.id)}>delete</button>
+    {/if}
     
     <div class="clear"></div>
    
@@ -180,6 +185,11 @@
     <div class="trends">
       
       <h4>Trends</h4>
+      
+      <div class="trend">#TwitterDown</div>
+      <div class="trend">#AbsolutelyNOT</div>
+      <div class="trend">#TwitterTakeOver</div>
+   
       
     </div>
     
@@ -219,11 +229,20 @@
     clear: both;
   }
   
+  .handle{
+    font-weight: bold;
+  }
+  
   .trends{
     background-color: #F7F9F9;
     border-radius: 8px;
     padding: 15px;
     margin-top: 15px;
     min-height: 150px;
+  }
+  
+  .trend{
+    font-weight: bold;
+    padding-bottom: 5px;
   }
 </style>
